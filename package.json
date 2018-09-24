@@ -1,0 +1,16 @@
+{
+  "name": "simple-bilibili",
+  "version": "1.0.0",
+  "description": "make bilibili simple",
+  "main": "background-script.js",
+  "scripts": {
+    "test": ""
+  },
+  "keywords": [
+    "web-ext"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+  }
+}
