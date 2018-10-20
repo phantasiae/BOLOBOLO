@@ -1,0 +1,37 @@
+{
+  "manifest_version": 2,
+  "name": "B",
+  "version": "1.0",
+  "description": "test B",
+  "icons": {
+    "48": "icons/beasts-48.png"
+  },
+  "permissions": [
+    "activeTab",
+    "contextMenus",
+    "notifications",
+    "storage",
+    "tabs"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://www.bilibili.com/v/*"],
+      "js": ["dist/list-blocker.js"]
+    },
+    {
+      "matches": ["*://space.bilibili.com/*"],
+      "js": ["dist/user-marker.js"]
+    }
+  ],
+  "background": {
+    "scripts": ["dist/background-script.js"]
+  },
+  "browser_action": {
+    "default_icon": {
+      "19": "icons/beasts-48.png",
+      "38": "icons/beasts-48.png"
+    },
+    "default_title": "Whereami?",
+    "default_popup": "popup/show-black-list.html"
+  }
+}

@@ -1,9 +1,3 @@
-/* global IDBFiles */
-
-"use strict";
-
-browser.runtime.onMessage.addListener(communication);
-
 function BlackListOperator(func) {
   const dbname = "bilibili_black_list";
   const objectName = "black_list";
@@ -103,3 +97,5 @@ function communication(request, sender, sendResponse) {
     console.log('--- communication * err:---\n', err);
   }
 }
+
+browser.runtime.onMessage.addListener(communication);
