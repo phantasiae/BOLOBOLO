@@ -1,0 +1,21 @@
+* About
+
+BOLOBOLO(仮)
+
+block videos of someone who is a uprushi you do not to see in bilibili.
+
+I block someone who is a marketing ID, and you can ...
+
+/this project is available, but not complete now./
+
+* TODO
+
++ [ ] beautify html in blocked videos.
++ [ ] beautify popup with click icon in web-ext.
++ [ ] remove uprushi from list
++ [ ] design a beautiful icon.
++ [ ] tag every uprushi with color or other style.
++ [ ] stop block someone in blocked list of uprushi.
++ [ ] no obvious result of click block button.
++ [ ] redux or mobX in action with react.
+
