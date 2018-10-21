@@ -24,7 +24,7 @@
     }
   ],
   "background": {
-    "scripts": ["dist/background-script.js"]
+    "scripts": ["dist/background.js"]
   },
   "browser_action": {
     "default_icon": {
@@ -32,6 +32,6 @@
       "38": "icons/beasts-48.png"
     },
     "default_title": "Whereami?",
-    "default_popup": "popup/show-black-list.html"
+    "default_popup": "./show-black-list.html"
   }
 }

@@ -3,22 +3,24 @@
 
 function block(item) {
   try {
-  let newItem = document.createElement("div");
-  let newContent = document.createTextNode("该用户已被屏蔽!");
+    let newItem = document.createElement("div");
 
-  item.style.display = "none";
+    // TODO: new UI
+    let newContent = document.createTextNode("该用户已被屏蔽!");
 
-  newItem.className = item.className;
+    item.style.display = "none";
 
-  const style = document.createElement('style');
-  style.type = 'text/css';
-  style.innerHTML = '.be-blocked-item { color: #F00; }';
-  document.getElementsByTagName('head')[0].appendChild(style);
-  newItem.classList.add('be-blocked-item');
+    newItem.className = item.className;
 
-  newItem.appendChild(newContent);
+    const style = document.createElement('style');
+    style.type = 'text/css';
+    style.innerHTML = '.be-blocked-item { color: #F00; }';
+    document.getElementsByTagName('head')[0].appendChild(style);
+    newItem.classList.add('be-blocked-item');
 
-  item.parentElement.insertBefore(newItem, item);
+    newItem.appendChild(newContent);
+
+    item.parentElement.insertBefore(newItem, item);
   } catch (err) {
     console.log('--- block ---', err);
   }
@@ -29,18 +31,18 @@ function markVideos(message) {
   const upRushiList = message.upRushiList;
 
   console.log('--- message ---', message);
-  
+
 
   for (let i = 0; i < elements.length; i++) {
     const upAuthorText = elements[i].childNodes.item(1).childNodes.item(3).innerText;
     console.log('--- upAuthorText ---', upAuthorText);
-    console.log('--- element ---', elements);
     console.log('i:', i, );
     console.log('l:', elements.length);
-  
+
     for (let blackItem of upRushiList) {
 
-      if (upAuthorText === blackItem) {
+      console.log('--- blackItem ---', blackItem);
+      if (upAuthorText === blackItem.name) {
         console.log('--- item ---', i, elements[i], upAuthorText === blackItem);
         block(elements[i]);
         i++;
@@ -51,12 +53,12 @@ function markVideos(message) {
 }
 
 function tryMarkVideos() {
-  browser.runtime.sendMessage({ upRushiList: "get" })
-    .then(
-      markVideos,
-      (err) => {
-        console.log('--- GET upRushiList err ---', err);
-      });
+  browser.runtime.sendMessage({ type: "soshou" })
+	 .then(
+	   markVideos,
+	   (err) => {
+             console.log('--- GET upRushiList err ---', err);
+	   });
 }
 
 const interval = setInterval(() => {

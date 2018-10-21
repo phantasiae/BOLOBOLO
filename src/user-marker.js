@@ -20,11 +20,13 @@ function addButton2BlackList(beDropDownList) {
 
 function blockButtonClick() {
   const upRushi = document.getElementById("h-name").textContent;
-  browser.runtime.sendMessage({ upRushi: upRushi });
+  console.log('--- b ---', upRushi);
+  browser.runtime.sendMessage({ upRushi: upRushi, type: "souki" });
 }
 
 const interval = setInterval(() => {
   const beDropDownList = document.querySelectorAll(".be-dropdown-menu");
+  console.log('--- * 1 ---');
   if (beDropDownList.length !== 0) {
     addButton2BlackList(beDropDownList);
     clearInterval(interval);

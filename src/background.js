@@ -1,19 +1,47 @@
-function BlackListOperator(func) {
-  const dbname = "bilibili_black_list";
-  const objectName = "black_list";
-  const version = 2;
+function communication(request, sender, sendResponse) {
+  try {
+    if (request.type === 'souki') {
+      return sendResponse(new BlackList().instance().save(request.upRushi));
+    } else if (request.type === 'soshou') {
+      new BlackList().instance().list(sendResponse);
+      return true;
+    } else {
+      console.log('--- communication err:---\nNo Such Message!');
+      return sendResponse({ error: "!" });
+    }
+  } catch (err) {
+    console.log('--- communication * err:---\n', err);
+  }
+}
 
-  const request = window.indexedDB.open(dbname, version);
 
-  request.onerror = (event) => {
+class BlackList {
+  constructor() {
+    this.dbname = "bilibili_black_list";
+    this.objectName = "black_list";
+    this.version = 1;
+  }
+
+  instance() {
+    if (!this.request) {
+      this.request = window.indexedDB.open(this.dbname, this.version);
+      this.request.onerror = this.onerror;
+      this.request.onupgradeneeded = this.onupgradeneeded;
+    }
+
+    return this;
+  }
+
+  onerror = (event) => {
     console.log('--- Open IndexedDB error ---', event);
   }
 
-  request.onupgradeneeded = (event) => {
+  onupgradeneeded = (event) => {
     try {
       const db = event.target.result;
-      if (!db.objectStoreNames.contains(objectName)) {
-        objStore = db.createObjectStore(objectName, { autoIncrement: true });
+
+      if (!db.objectStoreNames.contains(this.objectName)) {
+        let objStore = db.createObjectStore(this.objectName, { autoIncrement: true });
 
         // TODO: +?
         objStore.createIndex("up_rushi", "up_rushi", { unique: true });
@@ -24,26 +52,38 @@ function BlackListOperator(func) {
     }
   }
 
-  request.onsuccess = (event) => {
-    const db = event.target.result;
-    const objectStore = db.transaction(objectName, "readwrite")
-    .objectStore(objectName);
+  successHandler(func) {
+    this.request.onsuccess = (event) => {
+      const db = event.target.result;
+      db.onerror = this.onerror;
 
-    const request = func(objectStore);
+      const objectStore = db.transaction(this.objectName, "readwrite")
+			    .objectStore(this.objectName);
 
-    return;
+      func(objectStore)
+      return;
+    }    
   }
-}
 
-function insertBlackList(upRushi) {
-  BlackListOperator((objectStore) => {
-    return objectStore.add(upRushi);
-  });
-}
+  save(upRushi) {
+    browser.notifications.create({
+      "type": "basic",
+      "iconUrl": browser.extension.getURL("beasts-48.png"),
+      "title": "将以下up主加入黑名单!",
+      "message": upRushi,
+    });
 
-function listBlackList(sendResponse) {
-  try {
-    const result = BlackListOperator((objectStore) => {
+    this.successHandler((objectStore) => objectStore.add({ name: upRushi, enable: true }));
+  }
+
+  delete() {
+  }
+
+  tag() {
+  }
+
+  list(sendResponse) {
+    this.successHandler((objectStore) => {
       let res = [];
 
       objectStore.openCursor().onsuccess = (event) => {
@@ -56,46 +96,14 @@ function listBlackList(sendResponse) {
           sendResponse({ "upRushiList": res });
         }
       }
-
-      objectStore.openCursor().onerror = (event) => {
-        console.log('--- openCursor err ---', event);
-      }
+      
+      objectStore.openCursor().onerror = this.onerror;
     });
-
-    return result;
-  } catch (err) {
-    console.log('--- err ---', err);
   }
 }
 
-
-function saveBlackList(message) {
-  browser.notifications.create({
-    "type": "basic",
-    "iconUrl": browser.extension.getURL("beasts-48.png"),
-    "title": "将以下up主加入黑名单!",
-    "message": message.upRushi,
-  });
-
-  console.log('--- save * ---');
-  insertBlackList(message.upRushi);
-  return "?";
+class BlackListHelper {
 }
 
-function communication(request, sender, sendResponse) {
-  try {
-    if (request.upRushi) {
-      return sendResponse(saveBlackList(request));
-    } else if (request.upRushiList) {
-      listBlackList(sendResponse);
-      return true;
-    } else {
-      console.log('--- communication err:---\nNo Such Message!');
-      return sendResponse({ error: "!" });
-    }
-  } catch (err) {
-    console.log('--- communication * err:---\n', err);
-  }
-}
 
 browser.runtime.onMessage.addListener(communication);

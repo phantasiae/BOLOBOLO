@@ -12,6 +12,7 @@ module.exports = {
     popup: 'show-black-list.js',
     'list-blocker': 'list-blocker.js',
     'show-black-list': 'show-black-list.js',
+    'user-marker': 'user-marker.js',
   },
   output: {
     // This copies each source entry into the extension dist folder named
